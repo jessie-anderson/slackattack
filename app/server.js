@@ -14,18 +14,23 @@ const yelp = new Yelp({
   token_secret: process.env.TOKEN_SECRET,
 });
 
+// constants
 const iWantFood = ['hungry', 'food', 'restaurant', 'eat', 'dinner', 'breakfast', 'lunch'];
-const helpMessage = 'I can say hello to you and help you find food.';
+const helpMessage = 'I can wake up on command, say hello to you, and help you find food.';
 
+// helper function
 function askFoodLocation(response, convo, bot) {
   convo.say('Great!');
   convo.ask('What kind of food would you like?', (response2, convo2) => {
+    // Save responses to food/ location question
     const food = response2.text;
     convo2.ask('Where are you located?', (response3, convo3) => {
       const location = response3.text;
       convo3.next();
       convo3.say(`So, you're looking for ${food} in ${location}.`);
       convo3.say('Let me see what I can find for you.');
+
+      // use yelp!
       yelpIt(food, location, response, convo, bot);
       convo3.next();
     });
@@ -33,10 +38,12 @@ function askFoodLocation(response, convo, bot) {
   });
 }
 
+// helper function, called if initial search returned no results
 function searchAgain(response, convo, bot) {
   convo.say('I\'m sorry, I couldn\'t find anything that matched your criteria.');
   convo.ask('Would you like to search for something else?', [
     {
+      // if the user wants to, the bot will ask for search criteria again
       pattern: bot.utterances.yes,
       callback: (response2, convo2) => {
         askFoodLocation(response2, convo2);
@@ -44,6 +51,7 @@ function searchAgain(response, convo, bot) {
       },
     },
     {
+      // if the user doesn't want another search, the bot stops talking
       pattern: bot.utterances.no,
       callback: (response2, convo2) => {
         convo2.say('All right, let me know if you need anything else!');
@@ -51,6 +59,7 @@ function searchAgain(response, convo, bot) {
       },
     },
     {
+      // if the bot doesn't understand, it prompts the user again
       default: true,
       callback: (response2, convo2) => {
         convo2.say('Sorry, I didn\'t understand your response.');
@@ -62,19 +71,23 @@ function searchAgain(response, convo, bot) {
   convo.next();
 }
 
+// the yelp tool in action!
 function yelpIt(food, place, response, convo, bot) {
   yelp.search({ term: food, location: place })
   .then((data) => {
+    // If there are no businesses in business array, prompt user to search again
     if (data.businesses.length === 0) {
       console.log('no businesses\n');
       searchAgain(response, convo, bot);
     } else {
+      // list businesses using attachments
       convo.say('Here\'s what I found:');
       data.businesses.forEach(business => {
         const businessName = business.name;
         let businessRating = business.rating;
         businessRating = `Rating: ${businessRating}`;
         const businessImage = business.image_url;
+        // attachment
         const businessInfo = {
           attachments: [
             {
@@ -91,6 +104,7 @@ function yelpIt(food, place, response, convo, bot) {
     }
   },
   (reason) => {
+    // If there's an error, prompt user to enter different search criteria
     console.log('error\n');
     searchAgain(response, convo, bot);
   });
@@ -125,6 +139,7 @@ controller.hears(iWantFood, ['direct_message', 'direct_mention', 'mention'], (bo
       bot.startConversation(message, (err, convo) => {
         convo.ask('Would you like some food recommendations near you?', [
           {
+            // if yes, initialize search
             pattern: bot.utterances.yes,
             callback: (response, convo2) => {
               askFoodLocation(response, convo2, bot);
@@ -132,6 +147,7 @@ controller.hears(iWantFood, ['direct_message', 'direct_mention', 'mention'], (bo
             },
           },
           {
+            // if no, give a sassy response
             pattern: bot.utterances.no,
             callback: (response, convo2) => {
               convo2.say('Then don\'t tell me you\'re hungry!');
@@ -139,6 +155,7 @@ controller.hears(iWantFood, ['direct_message', 'direct_mention', 'mention'], (bo
             },
           },
           {
+            // if the bot doesn't understand, prompt user again
             default: true,
             callback: (response, convo2) => {
               convo2.say('I\'m sorry, I didn\'t understand your response.');
@@ -164,10 +181,12 @@ controller.hears(['hello', 'hi', 'howdy'], ['direct_message', 'direct_mention', 
   });
 });
 
+// help message
 controller.hears(['help'], ['direct_message', 'direct_mention', 'mention'], (bot, message) => {
   bot.reply(message, helpMessage);
 });
 
+// response to webhook
 controller.on('outgoing_webhook', (bot, message) => {
   const wakeUpReply = {
     text: 'fine FINE I\'m here!',
@@ -181,6 +200,7 @@ controller.on('outgoing_webhook', (bot, message) => {
   bot.replyPublic(message, wakeUpReply);
 });
 
+// default response to message bot doesn't understand
 controller.on(['direct_message', 'direct_mention', 'mention'], (bot, message) => {
   bot.reply(message, 'I\'m sorry; I don\'t understand that message.');
 });
