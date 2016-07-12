@@ -68,8 +68,7 @@ function yelpIt(food, place, response, convo, bot) {
     if (data.businesses.length === 0) {
       console.log('no businesses\n');
       searchAgain(response, convo, bot);
-    }
-    else {
+    } else {
       convo.say('Here\'s what I found:');
       data.businesses.forEach(business => {
         const businessName = business.name;
@@ -127,24 +126,24 @@ controller.hears(iWantFood, ['direct_message', 'direct_mention', 'mention'], (bo
         convo.ask('Would you like some food recommendations near you?', [
           {
             pattern: bot.utterances.yes,
-            callback: (response, convo) => {
-              askFoodLocation(response, convo, bot);
-              convo.next();
+            callback: (response, convo2) => {
+              askFoodLocation(response, convo2, bot);
+              convo2.next();
             },
           },
           {
             pattern: bot.utterances.no,
-            callback: (response, convo) => {
-              convo.say('Then don\'t tell me you\'re hungry!');
-              convo.next();
+            callback: (response, convo2) => {
+              convo2.say('Then don\'t tell me you\'re hungry!');
+              convo2.next();
             },
           },
           {
             default: true,
-            callback: (response, convo) => {
-              convo.say('I\'m sorry, I didn\'t understand your response.');
-              convo.repeat();
-              convo.next();
+            callback: (response, convo2) => {
+              convo2.say('I\'m sorry, I didn\'t understand your response.');
+              convo2.repeat();
+              convo2.next();
             },
           },
         ]);
