@@ -19,9 +19,9 @@ const helpMessage = 'I can say hello to you and help you find food.';
 
 function askFoodLocation(response, convo, bot) {
   convo.say('Great!');
-  convo.ask('What kind of food would you like?', (response, convo) => {
+  convo.ask('What kind of food would you like?', (response2, convo2) => {
     const food = response.text;
-    convo.ask('Where are you located?', (response, convo) => {
+    convo.ask('Where are you located?', (response3, convo3) => {
       const location = response.text;
       convo.next();
       convo.say(`So, you're looking for ${food} in ${location}.`);
