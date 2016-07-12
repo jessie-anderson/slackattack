@@ -73,20 +73,20 @@ function yelpIt(food, place, response, convo, bot) {
       convo.say('Here\'s what I found:');
       data.businesses.forEach(business => {
         const businessName = business.name;
-        const businessRating = business.rating;
-        const businessIsClosed = business.is_closed;
-        const businessPhone = business.phone;
-        let isOpenResponse;
-        if (businessIsClosed) {
-          isOpenResponse = 'no';
-        }
-        else {
-          isOpenResponse = 'yes';
-        }
-        convo.say(`Name: ${businessName}`);
-        convo.say(`Rating: ${businessRating}`);
-        convo.say(`Business is currently open: ${isOpenResponse}`);
-        convo.say(`Number: ${businessPhone}`);
+        let businessRating = business.rating;
+        businessRating = `Rating: ${businessRating}`;
+        const businessImage = business.image_url;
+        const businessInfo = {
+          attachments: [
+            {
+              fallback: 'business info',
+              title: businessName,
+              text: businessRating,
+              image_url: businessImage,
+            },
+          ],
+        };
+        convo.say(businessInfo);
         convo.next();
       });
     }
@@ -171,11 +171,11 @@ controller.hears(['help'], ['direct_message', 'direct_mention', 'mention'], (bot
 
 controller.on('outgoing_webhook', (bot, message) => {
   const wakeUpReply = {
-    'text': 'fine FINE I\'m here!',
-    'attachments': [
+    text: 'fine FINE I\'m here!',
+    attachments: [
       {
-        'fallback': 'wake up reply',
-        'image_url': 'https://giphy.com/gifs/funny-dog-13k2kjI5WKG05W',
+        fallback: 'wake up reply',
+        image_url: 'https://giphy.com/gifs/funny-dog-13k2kjI5WKG05W',
       },
     ],
   };
