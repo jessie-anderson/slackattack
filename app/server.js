@@ -189,10 +189,10 @@ controller.hears(['help'], ['direct_message', 'direct_mention', 'mention'], (bot
 // response to webhook
 controller.on('outgoing_webhook', (bot, message) => {
   const wakeUpReply = {
-    text: 'fine FINE I\'m here!',
     attachments: [
       {
         fallback: 'wake up reply',
+        text: 'fine FINE I\'m here!',
         image_url: 'https://giphy.com/gifs/funny-dog-13k2kjI5WKG05W',
       },
     ],
