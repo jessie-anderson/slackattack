@@ -38,24 +38,24 @@ function searchAgain(response, convo, bot) {
   convo.ask('Would you like to search for something else?', [
     {
       pattern: bot.utterances.yes,
-      callback: (response, convo) => {
-        askFoodLocation(response, convo);
-        convo.next();
+      callback: (response2, convo2) => {
+        askFoodLocation(response2, convo2);
+        convo2.next();
       },
     },
     {
       pattern: bot.utterances.no,
-      callback: (response, convo) => {
-        convo.say('All right, let me know if you need anything else!');
-        convo.next();
+      callback: (response2, convo2) => {
+        convo2.say('All right, let me know if you need anything else!');
+        convo2.next();
       },
     },
     {
       default: true,
-      callback: (response, convo) => {
-        convo.say('Sorry, I didn\'t understand your response.');
+      callback: (response2, convo2) => {
+        convo2.say('Sorry, I didn\'t understand your response.');
         convo.repeat();
-        convo.next();
+        convo2.next();
       },
     },
   ]);
