@@ -20,16 +20,16 @@ const helpMessage = 'I can say hello to you and help you find food.';
 function askFoodLocation(response, convo, bot) {
   convo.say('Great!');
   convo.ask('What kind of food would you like?', (response2, convo2) => {
-    const food = response.text;
-    convo.ask('Where are you located?', (response3, convo3) => {
-      const location = response.text;
-      convo.next();
-      convo.say(`So, you're looking for ${food} in ${location}.`);
-      convo.say('Let me see what I can find for you.');
+    const food = response2.text;
+    convo2.ask('Where are you located?', (response3, convo3) => {
+      const location = response3.text;
+      convo3.next();
+      convo3.say(`So, you're looking for ${food} in ${location}.`);
+      convo3.say('Let me see what I can find for you.');
       yelpIt(food, location, response, convo, bot);
-      convo.next();
+      convo3.next();
     });
-    convo.next();
+    convo2.next();
   });
 }
 
