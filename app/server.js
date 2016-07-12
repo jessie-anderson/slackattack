@@ -66,6 +66,7 @@ function yelpIt(food, place, response, convo, bot) {
   yelp.search({ term: food, location: place })
   .then((data) => {
     if (data.businesses.length === 0) {
+      console.log('no businesses\n');
       searchAgain(response, convo, bot);
     }
     else {
@@ -91,6 +92,7 @@ function yelpIt(food, place, response, convo, bot) {
     }
   },
   (reason) => {
+    console.log('error\n');
     searchAgain(response, convo, bot);
   });
 }
@@ -168,7 +170,16 @@ controller.hears(['help'], ['direct_message', 'direct_mention', 'mention'], (bot
 });
 
 controller.on('outgoing_webhook', (bot, message) => {
-  bot.replyPublic(message, 'fine FINE I\'m here!');
+  const wakeUpReply = {
+    'text': 'fine FINE I\'m here!',
+    'attachments': [
+      {
+        'fallback': 'wake up reply',
+        'image_url': 'https://giphy.com/gifs/funny-dog-13k2kjI5WKG05W',
+      },
+    ],
+  };
+  bot.replyPublic(message, wakeUpReply);
 });
 
 controller.on(['direct_message', 'direct_mention', 'mention'], (bot, message) => {
